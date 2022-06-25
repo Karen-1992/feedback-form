@@ -1,0 +1,78 @@
+.app {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* margin: 0 auto; */
+    padding: 20px;
+    width: 400px;
+    border-radius: 12px;
+    -webkit-box-shadow: 0px 0px 22px 0px rgba(34, 60, 80, 0.24);
+    -moz-box-shadow: 0px 0px 22px 0px rgba(34, 60, 80, 0.24);
+    box-shadow: 0px 0px 22px 0px rgba(34, 60, 80, 0.24);
+}
+
+textarea {
+    resize: none;
+    width: 100%;
+    margin-top: 4px;
+}
+button {
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 8px;
+    color: #fff;
+    background-color: #4caf50;
+    opacity: 0.7;
+}
+
+input {
+    width: 100%;
+    padding: 2px;
+    margin-top: 4px;
+    height: 26px;
+    border: 1px solid black;
+    border-radius: 2px;
+}
+input:focus {
+    outline: 2px solid rgba(0, 0, 255, 0.407);
+}
+
+.invalid {
+    /* height: 18px; */
+    outline: 2px solid red;
+    /* border-radius: 2px; */
+    border: none;
+    box-shadow: 1px 1px 2px 0 red;
+}
+.invalid:focus {
+    outline: 2px solid red;
+}
+
+.error-text {
+    position: absolute;
+    color: red;
+    font-size: 12px;
+    margin-top: 2px;
+    line-height: 110%;
+}
+
+.text-field__container {
+    width: 100%;
+    margin: 0 auto;
+    margin-bottom: 25px;
+}
+
+.input__container {
+    position: relative;
+}
+
+.required {
+    margin: 0 2px;
+    color: red;
+}
