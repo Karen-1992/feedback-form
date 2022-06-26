@@ -2,34 +2,38 @@ import React, { useEffect, useState } from "react";
 import { validator } from "../../utils/validator";
 import TextAreaField from "../common/textAreaField";
 import TextField from "../common/textField";
-import { sendForm } from "../../services/http.service";
+import { postData } from "../../services/http.service";
 import TelField from "../common/telField";
+import { getUserDataToStorage } from "../../services/localStorage.service";
+// import { setUserDataToStorage } from "../../services/localStorage.service";
 
 const Form = () => {
-    const [data, setData] = useState({
+    const userData = getUserDataToStorage();
+    const initialState = userData || {
         name: "",
         email: "",
         phone: "",
         date: "",
         message: ""
-    });
-    // const [submit, setSubmit] = useState(false);
+    };
+    const [data, setData] = useState(initialState);
+    const [response, setResponse] = useState("");
     const [errors, setErrors] = useState({});
     const handleChange = (target) => {
-        // console.log(target.value);
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
         }));
+    };
+    const clearForm = () => {
+        setData(initialState);
+        setErrors({});
     };
     const validatorConfig = {
         name: {
             isRequired: {
                 message: "isRequired"
             },
-            // isRequired: {
-            //     message: "Имя и фамилия обязательны для заполнения"
-            // },
             spaces: {
                 message: "Cлишком много пробелов"
             },
@@ -50,9 +54,6 @@ const Form = () => {
             }
         },
         email: {
-            // isRequired: {
-            //     message: "Электронная почта обязательна для заполнения"
-            // },
             isRequired: {
                 message: "isRequired"
             },
@@ -72,25 +73,16 @@ const Form = () => {
                 message: "Слишком длинный номер",
                 value: 19
             }
-            // isRequired: {
-            //     message: "Телефон обязателен для заполнения"
-            // }
         },
         date: {
             isRequired: {
                 message: "isRequired"
             }
-            // isRequired: {
-            //     message: "Дата рождения обязательна для заполнения"
-            // }
         },
         message: {
             isRequired: {
                 message: "isRequired"
             },
-            // isRequired: {
-            //     message: "Сообщение обязательно для заполнения"
-            // },
             min: {
                 message: "Минимальная длина сообщения 10 символа",
                 value: 10
@@ -106,27 +98,41 @@ const Form = () => {
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
-    const isValid = Object.keys(errors).length === 0;
+    const isValid = Object.keys(errors).length === 0 &&
+        response !== "in process";
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        try {
-            sendForm(data)
-                .then((data) => console.log(data))
-                .catch((error) => console.log(error));
-            // console.log(data);
-            // await signUp(newData);
-        } catch (error) {
-            console.log(error);
-            setErrors(error);
-        }
+        setResponse("in process");
+        const result = await postData(data);
+        // для наглядности отправки формы вложил в setTimeout получение ответа, чтобы увеличить время между отправкой и получением ответа
+        setTimeout(() => {
+            setResponse(result);
+            console.log(result);
+            if (result.status === "success") {
+                clearForm();
+                setResponse(result);
+                // закомментированный ниже код для возможности хранения данных пользователя в localStorage (кроме сообщения), при успешной отправке формы данные берутся предыдущие успешно отправленные данные из хранилища
+                // const storageData = {
+                //     ...data,
+                //     message: ""
+                // };
+                // setUserDataToStorage(storageData);
+                // setData(storageData);
+            } else if (result.status === "error") {
+                setResponse(result);
+            }
+        }, 2000);
     };
     useEffect(() => {
         validate();
     }, [data]);
+    const handleFocus = (e) => {
+        setResponse("");
+    };
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onFocus={handleFocus}>
             <TextField
                 label="Имя Фамилия"
                 placeholder="Введите имя и фамилию"
@@ -172,9 +178,14 @@ const Form = () => {
                 <span className="required">*</span>
                 Поле обязательно для заполнения
             </p>
-            <button className="" type="submit" disabled={!isValid}>
+            <button className={isValid ? "button-valid" : ""} type="submit" disabled={!isValid}>
                 Submit
             </button>
+            <p
+                className={"response-status" + (response.status === "error" ? "-error" : "")}
+            >
+                {response.message}
+            </p>
         </form>
     );
 };

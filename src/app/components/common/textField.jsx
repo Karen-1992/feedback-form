@@ -32,7 +32,7 @@ const TextField = ({
         if (target.name === "name") {
             value = value.toUpperCase();
         }
-        onChange({ name: target.name, value: value });
+        onChange({ name: target.name, value });
     };
     const getInputClasses = () => {
         return error && error !== "isRequired" ? "invalid" : "";
@@ -53,7 +53,7 @@ const TextField = ({
                     onChange={handleChange}
                     className={getInputClasses()}
                 />
-                {error !== "isRequired" && (
+                {error && error !== "isRequired" && (
                     <div className="error-text">{error}</div>
                 )}
             </div>

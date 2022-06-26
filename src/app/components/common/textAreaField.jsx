@@ -37,7 +37,7 @@ const TextAreaField = ({
                     maxLength={maxLength}
                     className={getInputClasses()}
                 />
-                {error !== "isRequired" && (
+                {error && error !== "isRequired" && (
                     <div className="error-text">{error}</div>
                 )}
             </div>

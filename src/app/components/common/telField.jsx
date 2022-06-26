@@ -56,11 +56,11 @@ const TelField = ({
         //     e.preventDefault();
         //     return;
         // }
-        onChange({ name: target.name, value: value });
+        onChange({ name: target.name, value });
     };
     const handleFocus = ({ target }) => {
         const value = "+7 ";
-        onChange({ name: target.name, value: value });
+        onChange({ name: target.name, value });
     };
     const getInputClasses = () => {
         return error && error !== "isRequired" ? "invalid" : "";
@@ -84,7 +84,7 @@ const TelField = ({
                     onFocus={handleFocus}
                     maxLength="18"
                 />
-                {error !== "isRequired" && (
+                {error && error !== "isRequired" && (
                     <div className="error-text">{error}</div>
                 )}
             </div>
