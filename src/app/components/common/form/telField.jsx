@@ -15,13 +15,17 @@ const TelField = ({
         const { keyCode } = e;
         const isNum =
             (keyCode >= 96 && keyCode <= 105) ||
-            (keyCode >= 48 && keyCode <= 56) ||
+            (keyCode >= 48 && keyCode <= 57) ||
             keyCode === 8 ||
             keyCode === 9 ||
             keyCode === 46 ||
             keyCode === 37 ||
             keyCode === 39;
         if (!isNum) {
+            e.preventDefault();
+        }
+        if ((keyCode === 8 || keyCode === 46) && e.target.selectionStart < 5) {
+            console.log(e.target.value);
             e.preventDefault();
         }
     };
@@ -52,15 +56,12 @@ const TelField = ({
     const handleChange = (e) => {
         const { target } = e;
         const value = getPhoneValue(target);
-        // if (target.value.length < 3) {
-        //     e.preventDefault();
-        //     return;
-        // }
         onChange({ name: target.name, value });
     };
     const handleFocus = ({ target }) => {
-        const value = "+7 ";
-        onChange({ name: target.name, value });
+        const { value } = target;
+        const newValue = "+7" + value.slice(2, value.length);
+        onChange({ name: target.name, value: newValue });
     };
     const getInputClasses = () => {
         return error && error !== "isRequired" ? "invalid" : "";
