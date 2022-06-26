@@ -79,7 +79,7 @@ const FeedbackPage = () => {
                 message: "isRequired"
             },
             isDate: {
-                message: "Не верная дата либо вы слишком молоды"
+                message: "Неккоректная дата либо вы слишком молоды"
             }
         },
         message: {
