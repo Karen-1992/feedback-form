@@ -13,7 +13,8 @@ const TextField = ({
 }) => {
     const handleChange = (e) => {
         const { target } = e;
-        // const { value } = target;
+        let value = target.value;
+        // код ниже разрешает вводить только 1 пробел между 2 словами в поле name
         // if (target.name === "name") {
         //     let spaces = 0;
         //     let spaceIndex;
@@ -28,7 +29,7 @@ const TextField = ({
         //         return;
         //     }
         // }
-        let value = target.value;
+        //
         if (target.name === "name") {
             value = value.toUpperCase();
         }

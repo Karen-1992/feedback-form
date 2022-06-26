@@ -24,12 +24,20 @@ export function validator(data, config) {
             statusValidate = matches !== data.length;
             break;
         }
+        case "isDate": {
+            const dateNowYear = new Date().getFullYear();
+            const selectedDateYear = new Date(data).getFullYear();
+            statusValidate =
+                dateNowYear - 18 < selectedDateYear ||
+                selectedDateYear < 1900;
+            break;
+        }
         case "min": {
-            statusValidate = data.length < config.value;
+            statusValidate = data.trim().length < config.value;
             break;
         }
         case "max": {
-            statusValidate = data.length >= config.value;
+            statusValidate = data.trim().length >= config.value;
             break;
         }
         case "quantity": {
@@ -66,7 +74,7 @@ export function validator(data, config) {
                     spaceIndex = i;
                 }
             }
-            statusValidate = spaces >= 2 || spaceIndex === 0;
+            statusValidate = spaces > config.value || spaceIndex === 0;
             break;
         }
         default:

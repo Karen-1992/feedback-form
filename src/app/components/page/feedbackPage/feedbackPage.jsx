@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { validator } from "../../utils/validator";
-import TextAreaField from "../common/textAreaField";
-import TextField from "../common/textField";
-import { postData } from "../../services/http.service";
-import TelField from "../common/telField";
-import { getUserDataToStorage } from "../../services/localStorage.service";
+import { validator } from "../../../utils/validator";
+import { TextField, TelField, TextAreaField } from "../../common/form";
+import { postData } from "../../../services/http.service";
+import { getUserDataToStorage } from "../../../services/localStorage.service";
+import "./feedbackForm.sass";
 // import { setUserDataToStorage } from "../../services/localStorage.service";
 
-const Form = () => {
+const FeedbackPage = () => {
     const userData = getUserDataToStorage();
     const initialState = userData || {
         name: "",
@@ -35,7 +34,8 @@ const Form = () => {
                 message: "isRequired"
             },
             spaces: {
-                message: "Cлишком много пробелов"
+                message: "Cлишком много пробелов",
+                value: 1
             },
             isEng: {
                 message: "Используйте латинские буквы"
@@ -77,6 +77,9 @@ const Form = () => {
         date: {
             isRequired: {
                 message: "isRequired"
+            },
+            isDate: {
+                message: "Не верная дата либо вы слишком молоды"
             }
         },
         message: {
@@ -90,6 +93,9 @@ const Form = () => {
             max: {
                 message: "Максимальная длина сообщения 300 символа",
                 value: 300
+            },
+            spaces: {
+                message: "Cлишком много пробелов"
             }
         }
     };
@@ -98,32 +104,28 @@ const Form = () => {
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
-    const isValid = Object.keys(errors).length === 0 &&
-        response !== "in process";
+    const isValid =
+        Object.keys(errors).length === 0 && response !== "in process";
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
         setResponse("in process");
         const result = await postData(data);
-        // для наглядности отправки формы вложил в setTimeout получение ответа, чтобы увеличить время между отправкой и получением ответа
-        setTimeout(() => {
+        setResponse(result);
+        if (result.status === "success") {
+            clearForm();
             setResponse(result);
-            console.log(result);
-            if (result.status === "success") {
-                clearForm();
-                setResponse(result);
-                // закомментированный ниже код для возможности хранения данных пользователя в localStorage (кроме сообщения), при успешной отправке формы данные берутся предыдущие успешно отправленные данные из хранилища
-                // const storageData = {
-                //     ...data,
-                //     message: ""
-                // };
-                // setUserDataToStorage(storageData);
-                // setData(storageData);
-            } else if (result.status === "error") {
-                setResponse(result);
-            }
-        }, 2000);
+            // закомментированный ниже код для возможности хранения данных пользователя в localStorage (кроме сообщения), при успешной отправке формы данные берутся из предыдущей успешной отправки формы
+            // const storageData = {
+            //     ...data,
+            //     message: ""
+            // };
+            // setUserDataToStorage(storageData);
+            // setData(storageData);
+        } else if (result.status === "error") {
+            setResponse(result);
+        }
     };
     useEffect(() => {
         validate();
@@ -178,11 +180,18 @@ const Form = () => {
                 <span className="required">*</span>
                 Поле обязательно для заполнения
             </p>
-            <button className={isValid ? "button-valid" : ""} type="submit" disabled={!isValid}>
+            <button
+                className={isValid ? "button-valid" : ""}
+                type="submit"
+                disabled={!isValid}
+            >
                 Submit
             </button>
             <p
-                className={"response-status" + (response.status === "error" ? "-error" : "")}
+                className={
+                    "response-status" +
+                    (response.status === "error" ? "-error" : "")
+                }
             >
                 {response.message}
             </p>
@@ -190,4 +199,4 @@ const Form = () => {
     );
 };
 
-export default Form;
+export default FeedbackPage;
