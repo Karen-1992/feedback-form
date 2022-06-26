@@ -11,6 +11,7 @@ const TelField = ({
     placeholder,
     isRequired
 }) => {
+    const prefiks = "+7";
     const handleKeyDown = (e) => {
         const { keyCode } = e;
         const isNum =
@@ -60,11 +61,16 @@ const TelField = ({
     };
     const handleFocus = ({ target }) => {
         const { value } = target;
-        const newValue = "+7" + value.slice(2, value.length);
+        const newValue = prefiks + value.slice(2, value.length);
         onChange({ name: target.name, value: newValue });
     };
     const getInputClasses = () => {
         return error && error !== "isRequired" ? "invalid" : "";
+    };
+    const handleBlur = ({ target }) => {
+        if (target.value === prefiks) {
+            onChange({ name: target.name, value: "" });
+        }
     };
     return (
         <div className="text-field__container">
@@ -84,6 +90,7 @@ const TelField = ({
                     className={getInputClasses()}
                     onFocus={handleFocus}
                     maxLength="18"
+                    onBlur={handleBlur}
                 />
                 {error && error !== "isRequired" && (
                     <div className="error-text">{error}</div>
