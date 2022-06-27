@@ -4,7 +4,7 @@ import { TextField, TelField, TextAreaField } from "../../common/form";
 import { postData } from "../../../services/http.service";
 import { getUserDataToStorage } from "../../../services/localStorage.service";
 import "./feedbackForm.sass";
-// import { setUserDataToStorage } from "../../services/localStorage.service";
+// import { setUserDataToStorage } from "../../../services/localStorage.service";
 
 const FeedbackPage = () => {
     const userData = getUserDataToStorage();
@@ -111,11 +111,14 @@ const FeedbackPage = () => {
         const isValid = validate();
         if (!isValid) return;
         setResponse("in process");
-        const result = await postData(data);
-        setResponse(result);
-        if (result.status === "success") {
-            clearForm();
+        try {
+            const result = await postData(data);
             setResponse(result);
+            clearForm();
+            setResponse({
+                ...result,
+                message: "Successful submission"
+            });
             // закомментированный ниже код для возможности хранения данных пользователя в localStorage (кроме сообщения), при успешной отправке формы данные берутся из предыдущей успешной отправки формы
             // const storageData = {
             //     ...data,
@@ -123,8 +126,10 @@ const FeedbackPage = () => {
             // };
             // setUserDataToStorage(storageData);
             // setData(storageData);
-        } else if (result.status === "error") {
-            setResponse(result);
+        } catch (error) {
+            setResponse({
+                message: `${error.message}: something was wrong`
+            });
         }
     };
     useEffect(() => {
