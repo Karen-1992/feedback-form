@@ -13,20 +13,18 @@ const TelField = ({
 }) => {
     const prefiks = "+7";
     const handleKeyDown = (e) => {
-        const { keyCode } = e;
-        const isNum =
-            (keyCode >= 96 && keyCode <= 105) ||
-            (keyCode >= 48 && keyCode <= 57) ||
-            keyCode === 8 ||
-            keyCode === 9 ||
-            keyCode === 46 ||
-            keyCode === 37 ||
-            keyCode === 39;
-        if (!isNum) {
+        const { key } = e;
+        const isValidKey =
+            (key >= "0" && key <= "9") ||
+            key === "ArrowLeft" ||
+            key === "ArrowRight" ||
+            key === "Delete" ||
+            key === "Backspace" ||
+            key === "Tab";
+        if (!isValidKey) {
             e.preventDefault();
         }
-        if ((keyCode === 8 || keyCode === 46) && e.target.selectionStart < 5) {
-            console.log(e.target.value);
+        if ((key === "Delete" || key === "Backspace") && e.target.selectionStart < 5) {
             e.preventDefault();
         }
     };
