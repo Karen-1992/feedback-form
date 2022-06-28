@@ -111,14 +111,10 @@ const FeedbackPage = () => {
         const isValid = validate();
         if (!isValid) return;
         setResponse("in process");
-        try {
-            const result = await postData(data);
-            setResponse(result);
+        const result = await postData(data);
+        setResponse(result);
+        if (result.status === "success") {
             clearForm();
-            setResponse({
-                ...result,
-                message: "Successful submission"
-            });
             // закомментированный ниже код для возможности хранения данных пользователя в localStorage (кроме сообщения), при успешной отправке формы данные берутся из предыдущей успешной отправки формы
             // const storageData = {
             //     ...data,
@@ -126,10 +122,6 @@ const FeedbackPage = () => {
             // };
             // setUserDataToStorage(storageData);
             // setData(storageData);
-        } catch (error) {
-            setResponse({
-                message: `${error.message}: something was wrong`
-            });
         }
     };
     useEffect(() => {
